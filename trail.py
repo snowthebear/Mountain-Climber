@@ -42,7 +42,10 @@ class TrailSeries:
     def remove_mountain(self) -> TrailStore:
         """Removes the mountain at the beginning of this series."""
 
-        raise NotImplementedError()
+        mountain_remove = Trail(TrailSeries(None, self.following)) ##not sure
+        return mountain_remove
+
+        # raise NotImplementedError()
 
     def add_mountain_before(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain in series before the current one."""
