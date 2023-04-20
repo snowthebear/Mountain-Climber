@@ -41,23 +41,29 @@ class TrailSeries:
 
     def remove_mountain(self) -> TrailStore:
         """Removes the mountain at the beginning of this series."""
+
         raise NotImplementedError()
 
     def add_mountain_before(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain in series before the current one."""
-        raise NotImplementedError()
+
+        mountain_before = TrailSeries(mountain, Trail(TrailSeries(self.mountain, self.following)))
+        return mountain_before
 
     def add_empty_branch_before(self) -> TrailStore:
         """Adds an empty branch, where the current trailstore is now the following path."""
-        raise NotImplementedError()
+        empty_branch_before = TrailSplit(Trail(None), Trail(None), Trail(self))
+        return empty_branch_before
 
     def add_mountain_after(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain after the current mountain, but before the following trail."""
-        raise NotImplementedError()
+        mountain_after = TrailSeries(self.mountain, Trail(TrailSeries(mountain, self.following)))
+        return mountain_after
 
     def add_empty_branch_after(self) -> TrailStore:
         """Adds an empty branch after the current mountain, but before the following trail."""
-        raise NotImplementedError()
+        empty_branch_after = TrailSeries(self.mountain, Trail(TrailSplit(Trail(None), self.following)))
+        return empty_branch_after
 
 TrailStore = Union[TrailSplit, TrailSeries, None]
 
@@ -68,11 +74,13 @@ class Trail:
 
     def add_mountain_before(self, mountain: Mountain) -> Trail:
         """Adds a mountain before everything currently in the trail."""
-        raise NotImplementedError()
+        mountain_before = Trail(TrailSeries(mountain, self))
+        return mountain_before
 
     def add_empty_branch_before(self) -> Trail:
         """Adds an empty branch before everything currently in the trail."""
-        raise NotImplementedError()
+        empty_branch_before = Trail(TrailSplit(Trail(None), Trail(None), self))
+        return empty_branch_before
 
     def follow_path(self, personality: WalkerPersonality) -> None:
         """Follow a path and add mountains according to a personality."""
