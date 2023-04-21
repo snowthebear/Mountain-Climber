@@ -25,7 +25,7 @@ class TrailSplit:
 
     def remove_branch(self) -> TrailStore:
         """Removes the branch, should just leave the remaining following trail."""
-        raise NotImplementedError()
+        return Trail(TrailSplit(Trail(None), Trail(None), Trail(self.path_follow)))
 
 @dataclass
 class TrailSeries:
@@ -50,23 +50,22 @@ class TrailSeries:
     def add_mountain_before(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain in series before the current one."""
 
-        mountain_before = TrailSeries(mountain, Trail(TrailSeries(self.mountain, self.following)))
-        return mountain_before
+        return TrailSeries(mountain, Trail(TrailSeries(self.mountain, self.following)))
 
     def add_empty_branch_before(self) -> TrailStore:
         """Adds an empty branch, where the current trailstore is now the following path."""
-        empty_branch_before = TrailSplit(Trail(None), Trail(None), Trail(self))
-        return empty_branch_before
+
+        return TrailSplit(Trail(None), Trail(None), Trail(self))
 
     def add_mountain_after(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain after the current mountain, but before the following trail."""
-        mountain_after = TrailSeries(self.mountain, Trail(TrailSeries(mountain, self.following)))
-        return mountain_after
+        
+        return  TrailSeries(self.mountain, Trail(TrailSeries(mountain, self.following)))
 
     def add_empty_branch_after(self) -> TrailStore:
         """Adds an empty branch after the current mountain, but before the following trail."""
-        empty_branch_after = TrailSeries(self.mountain, Trail(TrailSplit(Trail(None), self.following)))
-        return empty_branch_after
+        
+        return TrailSeries(self.mountain, Trail(TrailSplit(Trail(None), Trail(None), self.following)))
 
 TrailStore = Union[TrailSplit, TrailSeries, None]
 
