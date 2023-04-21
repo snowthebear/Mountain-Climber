@@ -22,10 +22,12 @@ class TrailSplit:
     path_top: Trail
     path_bottom: Trail
     path_follow: Trail
+    
 
     def remove_branch(self) -> TrailStore:
         """Removes the branch, should just leave the remaining following trail."""
-        return Trail(TrailSplit(Trail(None), Trail(None), Trail(self.path_follow)))
+    
+        return self.path_follow.store
 
 @dataclass
 class TrailSeries:
@@ -42,8 +44,8 @@ class TrailSeries:
     def remove_mountain(self) -> TrailStore:
         """Removes the mountain at the beginning of this series."""
 
-        mountain_remove = Trail(TrailSeries(None, self.following)) ##not sure
-        return mountain_remove
+        # mountain_remove = Trail(TrailSeries(None, self.following)) ##not sure
+        return self.following.store
 
         # raise NotImplementedError()
 
@@ -60,7 +62,7 @@ class TrailSeries:
     def add_mountain_after(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain after the current mountain, but before the following trail."""
         
-        return  TrailSeries(self.mountain, Trail(TrailSeries(mountain, self.following)))
+        return TrailSeries(self.mountain, Trail(TrailSeries(mountain, self.following)))
 
     def add_empty_branch_after(self) -> TrailStore:
         """Adds an empty branch after the current mountain, but before the following trail."""
@@ -100,3 +102,7 @@ class Trail:
         Paths are unique if they take a different branch, even if this results in the same set of mountains.
         """
         raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    pass
