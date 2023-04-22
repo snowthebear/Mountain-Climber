@@ -28,7 +28,17 @@ class DoubleKeyTable(Generic[K1, K2, V]):
     HASH_BASE = 31
 
     def __init__(self, sizes:list|None=None, internal_sizes:list|None=None) -> None:
-        raise NotImplementedError()
+        # self.sizes = sizes
+        # self.internal_sizes = internal_sizes
+
+        if self.sizes is not None:
+            self.TABLE_SIZES = sizes
+        
+        if self.internal_sizes is not None:
+            self.TABLE_SIZES = internal_sizes
+
+
+        # raise NotImplementedError()
 
     def hash1(self, key: K1) -> int:
         """
@@ -65,7 +75,10 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         :raises KeyError: When the key pair is not in the table, but is_insert is False.
         :raises FullError: When a table is full and cannot be inserted.
         """
-        raise NotImplementedError()
+
+        if is_insert:
+            pass
+        # raise NotImplementedError()
 
     def iter_keys(self, key:K1|None=None) -> Iterator[K1|K2]:
         """
