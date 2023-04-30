@@ -28,6 +28,10 @@ class DoubleKeyTable(Generic[K1, K2, V]):
     HASH_BASE = 31
 
     def __init__(self, sizes:list|None=None, internal_sizes:list|None=None) -> None:
+
+        self.sizes = sizes
+        self.internal_sizes = internal_sizes
+
         self.count = 0
         self.sizes = self.TABLE_SIZES
         self.internal_sizes = self.TABLE_SIZES
