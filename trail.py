@@ -103,7 +103,7 @@ class Trail:
                     link_stack.push(store_obj.path_follow.store)
                     store_obj = store_obj.path_top.store
                     
-                else: #Bottom walker or Lazy walker
+                else: #Bottom walker or Lazy walker 
                     link_stack.push(store_obj.path_follow.store)
                     store_obj = store_obj.path_bottom.store
 
