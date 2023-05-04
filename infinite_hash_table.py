@@ -20,8 +20,13 @@ class InfiniteHashTable(Generic[K, V]):
 
     TABLE_SIZE = 27
 
-    def __init__(self) -> None:
-        raise NotImplementedError()
+    def __init__(self,sizes = None) -> None:
+
+        if sizes is not None:
+            self.TABLE_SIZE = sizes
+        self.level = 0
+        self.array = ArrayR(self.TABLE_SIZE)
+        self.count = 0
 
     def hash(self, key: K) -> int:
         if self.level < len(key):
@@ -51,7 +56,7 @@ class InfiniteHashTable(Generic[K, V]):
         raise NotImplementedError()
 
     def __len__(self):
-        raise NotImplementedError()
+        return self.count
 
     def __str__(self) -> str:
         """
