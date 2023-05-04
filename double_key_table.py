@@ -80,6 +80,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
 
         top_pos = self.hash1(key1)
         # print(type(self.table_size))
+
         for a in range (self.table_size):
             if self.outer_hash[top_pos] is None:
                 if is_insert:
@@ -92,19 +93,19 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                 else:
                     raise KeyError(top_pos)
             elif self.outer_hash[top_pos][0] == key1:
-                #cek inner ha
+                #cek inner hash
                 # print("x")
                 bottom_pos = self.outer_hash[top_pos][1]._linear_probe(key2, is_insert)
                 return (top_pos, bottom_pos)
             else:
                 top_pos = (top_pos + 1) % self.table_size
 
+
         if is_insert:
             raise FullError("Table is full!")
         else:
             raise KeyError
-
-
+      
     def iter_keys(self, key:K1|None=None) -> Iterator[K1|K2]:
         """
         key = None:
@@ -119,7 +120,11 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = None: returns all top-level keys in the table.
         key = x: returns all bottom-level keys for top-level key x.
         """
-        raise NotImplementedError()
+        res = []
+        for x in range(self.table_size):
+            if self.array[x] is not None:
+                res.append(self.array[x][0])
+        return res
 
     def iter_values(self, key:K1|None=None) -> Iterator[V]:
         """
@@ -168,12 +173,16 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         #     raise ValueError("Cannot insert into a full table.")
         
         (top_pos, bottom_pos) = self._linear_probe(key[0], key[1], True)
+        # if self.outer_hash[top_pos] is not None:
+        #     self.count += 1
         self.outer_hash[top_pos][1][key[1]] = data
-        print(key, (top_pos,bottom_pos), data)
-        # if self.outer_hash[position] is None:
-            # self.count += 1
-        # self.outer_hash[position] = (key, data)
-        ## self...[key[1]] = data
+        # print ("data:", data)
+        # print ("self.outer_hash[top_pos][1][key[1]]: ",type(self.outer_hash[top_pos][1][key[1]]))
+        # print ("top_pos: ", (top_pos,bottom_pos))
+        # print ("bottom_pos: ", bottom_pos)
+
+        if len(self) > self.table_size / 2:
+            self._rehash()
         
 
     def __delitem__(self, key: tuple[K1, K2]) -> None:
@@ -205,8 +214,123 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         :complexity worst: O(N*hash(K) + N^2*comp(K)) Lots of probing.
         Where N is len(self)
         """
-        raise NotImplementedError()
+        # old_array = self.outer_hash
+        # if self.size_index == len(self.sizes):
+        #     # Cannot be resized further.
+        #     return
+        # self.size_index +=1
+        
+        # self.outer_hash = ArrayR(self.sizes[self.size_index]) #outer table
+        # self.count = 0
+        
+        # for i in range (self.sizes(self.size_index)):
+        #     inner_hash = LinearProbeTable()
+        #     inner_hash.hash = lambda key2: self.hash2(key2, inner_hash)
+        #     self.outer_hash[i] = [None,inner_hash]
 
+        # for key1, inner_hash in old_array:
+        #     if key1 is not None:
+        #         top_pos = self.hash1(key1)
+        #         self.outer_hash[top_pos] = (key1, inner_hash)
+          
+    
+        # print (self.size_index) 
+        # print (self.sizes)
+        # print (len(self.outer_hash))
+        # print ("table_size: ", self.table_size)
+        # print ("count:" ,self.count)
+        # print ("self.outer_hash: ", len(self.outer_hash))
+        # print("self.sizes[self.size_index]: ",self.sizes[self.size_index])
+        # print ("self.sizes[self.size_index] // 2: ", self.sizes[self.size_index] // 2)
+        # print ("type outerhash[0]: ", type(self.outer_hash[0]))
+    # if len(self.outer_hash) >= self.sizes[self.size_index] // 2:
+    #---------------------------------------------------------------------------------
+        old_array = self.outer_hash
+        self.size_index += 1
+        if self.size_index == len(self.sizes):
+            # Cannot be resized further.
+            return
+        self.outer_hash = ArrayR(self.sizes[self.size_index]) #rehash outer table
+        # print (len(self.outer_hash))
+        self.count = 0 #reset the count to 0
+        # print("count: " ,self.count)
+        for item in old_array:
+            if item is not None:
+
+                (key1, inner_hash) = item
+                # print("after: ", (key,value))
+                print ("item: " ,item[1])
+                top_pos = self.hash1(key1)
+                # for i in range (self.table_size):
+                if self.outer_hash[top_pos] is None:
+                    self.outer_hash[top_pos] = (key1, inner_hash)
+                    self.count +=1
+                    return
+                else:
+                    top_pos = (top_pos + 1) % self.table_size
+
+                # print ("key: ", key)
+                # print ("Value: ", value)
+                # print ("len(value):",len(value))
+                # print ("iem[0]: ",item[0])
+                # print ("iem[1]: ",item[1])
+                # key2_value = item[1]
+
+                # print ("Key2_value:",key2_value)
+                # print (type(key2_value))
+                # self.outer_hash[]
+                # print ("item: ", item)
+                # self[key] = inner
+                # print("count:",  self.count)
+                # print ("self.outer_hash: ", self[key])
+                # for i in range (len(value)):
+                    # print ("length i: ", i)
+                # print ("self: " , self[key])
+
+        #---------------------------------------------------------------------------------
+
+        # print(self.sizes[self.size_index])
+        # print (self.table_size)
+        # print (f"self.outer_hash[0][1]: {self.outer_hash[0][1]} ", end ="")
+
+
+        # for i in range (len(self.outer_hash)): #inner table
+        #     # print ("len(self.outer_hash)): ",i)
+        #     print (type(self.outer_hash[i])) #tuple
+        #     if self.outer_hash[i] is not None:
+        #         print (len(self.outer_hash[i]))
+        #         print (type(self.outer_hash[i][1])) #data structure
+        #         print("outerhash[i]: ", self.outer_hash[i][1])
+        #         print ("self.internal_sizes[self.size_index]: ", self.internal_sizes[self.size_index])
+        #         print ("len(self.internal_sizes)",len(self.internal_sizes))
+        #         if len(self.outer_hash[i][1]) >= len(self.internal_sizes) // 2:
+        #             self.outer_hash[i][1]._rehash()
+        #             print ("3r")
+
+        # print ("table_size: ", self.table_size)
+        # print ("self.outer_hash: ", len(self.outer_hash))
+        # print("self.sizes[self.size_index]: ",self.sizes[self.size_index])
+        # print ("self.sizes[self.size_index] // 2: ", self.sizes[self.size_index] // 2)
+        # print ("count:",self.count)
+
+        # for i in range (len(self.outer_hash)): #inner table
+        #     if len(self.outer_hash[i][1]) == self.internal_sizes[self.size_index]:
+        #         old_array = self.outer_hash
+        #         self.size_index += 1
+        #         if self.size_index == len(self.outer_hash):
+        #             # print (self.size_index, len(self.outer_hash))
+        #             # Cannot be resized further.
+        #             return
+        #         self.outer_hash = ArrayR(self.sizes[self.size_index])
+        #         # print (len(self.outer_hash))
+        #         self.count = 0
+        #         for item in old_array:
+        #             if item is not None:
+        #                 key, value = item
+        #                 self[key] = value
+        
+        
+    
     @property
     def table_size(self) -> int:
         """
@@ -234,15 +358,30 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         return new_string
 
 if __name__ == "__main__":
-    dt = DoubleKeyTable(sizes=[12], internal_sizes=[5])
-    dt.hash1 = lambda k: ord(k[0]) % 12
-    dt.hash2 = lambda k, sub_table: ord(k[-1]) % 5
+    dt = DoubleKeyTable(sizes=[3, 5], internal_sizes=[3, 5])
+    dt.hash1 = lambda k: ord(k[0]) % dt.table_size
+    dt.hash2 = lambda k, sub_table: ord(k[-1]) % sub_table.table_size
+    dt["Pip", "Bob"] = 4
+    (dt.table_size, 5)
+    # print(dt._linear_probe("Tim", "Bob", False), (4, 3))
+    # print(dt._linear_probe("Pip", "Bob", False), (0, 2))
+    # print(dt._linear_probe("Tim", "Bob", False), (4, 3))
+    # print(dt._linear_probe("Pip", "Bob", False), (0, 2))
+    
+    
+    print (dt._rehash())
 
-    dt["Tim", "Jen"] = 1
-    dt["Amy", "Ben"] = 2
-    dt["May", "Ben"] = 3
-    dt["Ivy", "Jen"] = 4
-    dt["May", "Tom"] = 5
-    dt["Tim", "Bob"] = 6
-    print(dt["Tim","Jen"])
-    print(dt["Tim","Bob"])
+    # print (dt.table_size)
+    # print (dt.table_size is 5)
+    # dt.hash1 = lambda k: ord(k[0]) % 12
+    # dt.hash2 = lambda k, sub_table: ord(k[-1]) % 5
+
+    # dt["Tim", "Jen"] = 1
+    # dt["Amy", "Ben"] = 2
+    # dt["May", "Ben"] = 3
+    # dt["Ivy", "Jen"] = 4
+    # dt["May", "Tom"] = 5
+    # dt["Tim", "Bob"] = 6
+    # print(dt["Tim","Jen"])
+    # print(dt["Tim","Bob"])
+    

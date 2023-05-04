@@ -210,7 +210,7 @@ class LinearProbeTable(Generic[K, V]):
             if item is not None:
                 key, value = item
                 self[key] = value
-
+                
     def __str__(self) -> str:
         """
         Returns all they key/value pairs in our hash table (no particular
@@ -223,3 +223,7 @@ class LinearProbeTable(Generic[K, V]):
                 (key, value) = item
                 result += "(" + str(key) + "," + str(value) + ")\n"
         return result
+    
+if __name__ == "__main__":
+    t = LinearProbeTable()
+    print (t._rehash())

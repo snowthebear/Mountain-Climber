@@ -18,18 +18,18 @@ class MountainOrganiser:
     def add_mountains(self, mountains: list[Mountain]) -> None:
 
         self.rank_list.extend(mountains)
-        self.rank_list = mergesort(self.rank_list , key = lambda x:x.length)
+        self.rank_list = mergesort(self.rank_list , key = lambda x:x.length) # n log n
         temp = self.rank_list[0].length
         temp_list = []
         final = []
-        for mountain in self.rank_list:
+        for mountain in self.rank_list: #O(n) where m is the length of the rank_list
             if self.rank_list.index(mountain) == len(self.rank_list) - 1:
                 if mountain.length == temp:
                     temp_list.append(mountain)
-                    temp_list = mergesort(temp_list, key=lambda x: x.name)
+                    temp_list = mergesort(temp_list, key=lambda x: x.name) #O(Nlog(n))
                     final.extend(temp_list)
                 else:
-                    temp_list = mergesort(temp_list, key=lambda x: x.name)
+                    temp_list = mergesort(temp_list, key=lambda x: x.name) #O(Nlog(n))
                     final.extend(temp_list)
                     final.append(mountain)
             elif temp == mountain.length:
