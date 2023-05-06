@@ -123,19 +123,28 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             res = [self.outer_hash[x][0] for x in range (self.table_size) if self.outer_hash[x] is not None]
             print ("res: ",res)
             for item in res:
-                print ("item: ",item)
+                print ("res: ",res)
                 yield item
                 return iter(res) #when it reaches the end of the list
         
-        # else:
-        print ("b:",key)
-        pos = self.hash1(key)
-        res = []
-        for i in range (self.outer_hash[pos][1].table_size):
-            if self.outer_hash[pos][1] is not None:
-                yield self.outer_hash[pos][1].array[i][0]
-            else:
-                return
+        else:
+            print ("b:",key)
+            pos = self.hash1(key)
+            res = []
+            print (type(self.outer_hash[pos][1].table_size)) #table_size in LinearProbeTable
+            # for i in range (self.outer_hash[pos][1].table_size):
+            if self.outer_hash[pos][1].keys() is not None:
+                res.append(self.outer_hash[pos][1].keys())
+                # yield ("hasil1: ",self.outer_hash[pos][1].keys())
+            
+        for item in res:
+            print ("res: ", res)
+            yield item
+            return iter(res)
+                # yield ("hasil2: ",self.outer_hash[pos][1].keys())
+                # yield ("hasil3: ",self.outer_hash[pos][1].keys())
+            # else:
+            #     return
              
 
 
@@ -173,9 +182,22 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             for x in range(self.table_size): #loop through the table
                 if self.outer_hash[x] is not None: # if there is something in the table, return the values in that position.
                     res += self.outer_hash[x][1].values()
-            return iter(res)
-        else:
+            for item in res:
+                yield item
+                print ("res: ",res)
+                return iter(res)
+
+        else: #if key is not None
             pos = self.hash1(key)
+            res = []
+            # for i in range (self.outer_hash[pos][1].table_size):
+            if self.outer_hash[pos][1].values() is not None:
+                res.append(self.outer_hash[pos][1].values())
+                
+        for item in res:
+            print ("res: ", res)
+            yield item
+            return iter(res)
 
     def values(self, key:K1|None=None) -> list[V]:
         """
@@ -535,16 +557,19 @@ if __name__ == "__main__":
     dt["Kim", "Tim"] = 2
     dt["Kim", "jim"] = 3
 
-    key_iterator = dt.iter_keys()
+    key_iterator = dt.iter_keys("Kim")
     value_iterator = dt.iter_values()
 
     key = next(key_iterator)
-    print(key, ["May", "Kim"])
+    print(key, "=", ["May", "Kim"])
+
     value = next(value_iterator)
     print("value. : ",value, [1, 2])
 
     del dt["May", "Jim"]
     del dt["Kim", "Tim"]
+    # print(next(key_iterator))
+    # print(next(key_iterator))
 
 
     
