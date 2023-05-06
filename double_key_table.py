@@ -114,21 +114,29 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = k:
             Returns an iterator of all keys in the bottom-hash-table for k.
         """
-
+        print ("a:",key)
         if key is None:
-            res = []
-            for x in range(self.table_size):
-                if self.outer_hash[x] is not None:
-                    res.append(self.outer_hash[x][0])
-            return iter(res)
-        else:
-            pos = self.hash1(key)
-            res = []
-            yield (key[pos])
-            # for i in range (self.outer_hash[pos][1].table_size):
-            #     if self.outer_hash[pos][1] is not None:
-            # yield self.outer_hash[pos][1].array[1][0]
-                    
+            # res = []
+            # for x in range(self.table_size):
+            #     if self.outer_hash[x] is not None:
+            #         res.append(self.outer_hash[x][0])
+            res = [self.outer_hash[x][0] for x in range (self.table_size) if self.outer_hash[x] is not None]
+            print ("res: ",res)
+            for item in res:
+                print ("item: ",item)
+                yield item
+                return iter(res) #when it reaches the end of the list
+        
+        # else:
+        print ("b:",key)
+        pos = self.hash1(key)
+        res = []
+        for i in range (self.outer_hash[pos][1].table_size):
+            if self.outer_hash[pos][1] is not None:
+                yield self.outer_hash[pos][1].array[i][0]
+            else:
+                return
+             
 
 
     def keys(self, key:K1|None=None) -> list[K1]:
@@ -407,10 +415,10 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                 # print ("key: ", key)
                 # print ("inner table: ",inner_table)
                 list_key = inner_table.keys() #linear probe, key inner table
-                print (list_key)
+                # print (list_key)
                 # print ("list_key: ",list_key)
                 for key2 in list_key: #finding the inner key
-                    print (key2)
+                    # print (key2)
                     # if inner_table[key1] is None:
                     #     self[key, key1] = inner_table[key1]
                     #     print ("AA")
@@ -492,13 +500,13 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         return new_string
 
 if __name__ == "__main__":
-    dt = DoubleKeyTable(sizes=[3, 5], internal_sizes=[3, 5])
-    dt.hash1 = lambda k: ord(k[0]) % dt.table_size
-    dt.hash2 = lambda k, sub_table: ord(k[-1]) % sub_table.table_size
-    dt["Pip", "Bob"] = 4
-    (dt.table_size, 5)
+    # dt = DoubleKeyTable(sizes=[3, 5], internal_sizes=[3, 5])
+    # dt.hash1 = lambda k: ord(k[0]) % dt.table_size
+    # dt.hash2 = lambda k, sub_table: ord(k[-1]) % sub_table.table_size
+    # dt["Pip", "Bob"] = 4
+    # (dt.table_size, 5)
 
-    print (dt._rehash())
+    # print (dt._rehash())
 
     # dt = DoubleKeyTable(sizes=[12], internal_sizes=[5])
     # dt.hash1 = lambda k: ord(k[0]) % 12
@@ -522,20 +530,21 @@ if __name__ == "__main__":
     # dt["Tim", "Kat"] = 5
     # print(dt._linear_probe("Tim", "Kat", False), (1, 1))
 
-    # dt = DoubleKeyTable()
-    # dt["May", "Jim"] = 1
-    # dt["Kim", "Tim"] = 2
+    dt = DoubleKeyTable()
+    dt["May", "Jim"] = 1
+    dt["Kim", "Tim"] = 2
+    dt["Kim", "jim"] = 3
 
-    # key_iterator = dt.iter_keys()
-    # value_iterator = dt.iter_values()
+    key_iterator = dt.iter_keys()
+    value_iterator = dt.iter_values()
 
-    # key = next(key_iterator)
-    # print(key, ["May", "Kim"])
-    # value = next(value_iterator)
-    # print(value, [1, 2])
+    key = next(key_iterator)
+    print(key, ["May", "Kim"])
+    value = next(value_iterator)
+    print("value. : ",value, [1, 2])
 
-    # del dt["May", "Jim"]
-    # del dt["Kim", "Tim"]
+    del dt["May", "Jim"]
+    del dt["Kim", "Tim"]
 
 
     
