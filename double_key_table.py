@@ -134,10 +134,11 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             print (type(self.outer_hash[pos][1].table_size)) #table_size in LinearProbeTable
             # for i in range (self.outer_hash[pos][1].table_size):
             if self.outer_hash[pos][1].keys() is not None:
-                res.append(self.outer_hash[pos][1].keys())
+                res += self.outer_hash[pos][1].keys()
                 # yield ("hasil1: ",self.outer_hash[pos][1].keys())
             
         for item in res:
+            print ("item: ", item)
             print ("res: ", res)
             yield item
             return iter(res)
@@ -192,7 +193,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             res = []
             # for i in range (self.outer_hash[pos][1].table_size):
             if self.outer_hash[pos][1].values() is not None:
-                res.append(self.outer_hash[pos][1].values())
+                res += (self.outer_hash[pos][1].values())
                 
         for item in res:
             print ("res: ", res)
@@ -434,11 +435,11 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         for item in old_array:
             if item is not None:
                 key, inner_table = item
-                # print ("key: ", key)
-                # print ("inner table: ",inner_table)
+                print ("key: ", key)
+                print ("inner table: ",inner_table)
                 list_key = inner_table.keys() #linear probe, key inner table
                 # print (list_key)
-                # print ("list_key: ",list_key)
+                print ("list_key: ",list_key)
                 for key2 in list_key: #finding the inner key
                     # print (key2)
                     # if inner_table[key1] is None:
@@ -555,16 +556,18 @@ if __name__ == "__main__":
     dt = DoubleKeyTable()
     dt["May", "Jim"] = 1
     dt["Kim", "Tim"] = 2
-    dt["Kim", "jim"] = 3
+    # dt["Kim", "jim"] = 3
 
-    key_iterator = dt.iter_keys("Kim")
-    value_iterator = dt.iter_values()
+    key_iterator = dt.iter_keys()
+    value_iterator = dt.iter_values("Kim")
 
     key = next(key_iterator)
-    print(key, "=", ["May", "Kim"])
+    print("key: ",key, ["May", "Kim"])
 
     value = next(value_iterator)
     print("value. : ",value, [1, 2])
+    # value = next(value_iterator)
+    # print(value, [1, 2])
 
     del dt["May", "Jim"]
     del dt["Kim", "Tim"]
