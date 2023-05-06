@@ -114,41 +114,59 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = k:
             Returns an iterator of all keys in the bottom-hash-table for k.
         """
-        print ("a:",key)
+        # print ("a:",key)
+        # res = []
         if key is None:
+            # yield self.outer_hash
             # res = []
-            # for x in range(self.table_size):
-            #     if self.outer_hash[x] is not None:
+            for x in range(self.table_size):
+                if self.outer_hash[x] is not None:
+                    # print (self.outer_hash[x][0])
+                    yield self.outer_hash[x][0]
             #         res.append(self.outer_hash[x][0])
-            res = [self.outer_hash[x][0] for x in range (self.table_size) if self.outer_hash[x] is not None]
-            print ("res: ",res)
-            for item in res:
-                print ("res: ",res)
-                yield item
-                return iter(res) #when it reaches the end of the list
+            # res = [self.outer_hash[x][0] for x in range (self.table_size) if self.outer_hash[x] is not None]
+            
         
         else:
-            print ("b:",key)
             pos = self.hash1(key)
-            res = []
-            print (type(self.outer_hash[pos][1].table_size)) #table_size in LinearProbeTable
-            # for i in range (self.outer_hash[pos][1].table_size):
-            if self.outer_hash[pos][1].keys() is not None:
-                res += self.outer_hash[pos][1].keys()
-                # yield ("hasil1: ",self.outer_hash[pos][1].keys())
+            # print (type(self.outer_hash[pos][1].table_size)) #table_size in LinearProbeTable
+            # print ("aa: ", self.outer_hash[pos][1].keys())
+            for i in range (self.outer_hash[pos][1].table_size):
+                if self.outer_hash[pos][1] is not None:
+                    for i in self.outer_hash[pos][1].keys():
+                        yield i
+                
+        # # res.append(None)
+        # # print ("res: ", res)
+        # # print (len(res))
+        # list_res = iter(res)
+        # i = 0
+        # # while i != len(res):
+        # #     print ("i: ", i)
+        # #     # if i == len(res)-2:
+        # #     #     return (list_res)
+        # #     # print ("res: ",res)
+        # #     yield res[i]
+        # #     i+=1
+        # raise StopIteration
+
+        # for i in range (len(res)):
+        #     print ("res i: ", res[i])
+        #     if ([res[i]]) is not None:
+        #         print ("AAA")
+        #         yield res[i]
+            # return(iter(res))
             
-        for item in res:
-            print ("item: ", item)
-            print ("res: ", res)
-            yield item
-            return iter(res)
-                # yield ("hasil2: ",self.outer_hash[pos][1].keys())
-                # yield ("hasil3: ",self.outer_hash[pos][1].keys())
-            # else:
-            #     return
-             
+                # print ("res[i]: ", res[i])
+                
 
-
+        # for item in list_res:
+        #     if next(list_res) is None:
+        #         print ("AAA")
+        #         return (list_res)
+        #     yield item
+        # return (iter(res))
+    
     def keys(self, key:K1|None=None) -> list[K1]:
         """
         key = None: returns all top-level keys in the table.
@@ -178,27 +196,31 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = k:
             Returns an iterator of all values in the bottom-hash-table for k.
         """
+        # res = []
         if key is None: #if key is default (None)
-            res = []
             for x in range(self.table_size): #loop through the table
                 if self.outer_hash[x] is not None: # if there is something in the table, return the values in that position.
-                    res += self.outer_hash[x][1].values()
-            for item in res:
-                yield item
-                print ("res: ",res)
-                return iter(res)
+                    print (self.outer_hash[x][1].values()[0])
+                    yield self.outer_hash[x][1].values()[0]
 
         else: #if key is not None
             pos = self.hash1(key)
-            res = []
-            # for i in range (self.outer_hash[pos][1].table_size):
-            if self.outer_hash[pos][1].values() is not None:
-                res += (self.outer_hash[pos][1].values())
+            print ("pos: ", pos)
+            # print (type(self.outer_hash[pos]))
+            print (self.outer_hash[pos][1])
+            for i in range (self.outer_hash[pos][1].table_size):
+                if self.outer_hash[pos] is not None:
+                    for i in self.outer_hash[pos][1].values():
+                        yield i
                 
-        for item in res:
-            print ("res: ", res)
-            yield item
-            return iter(res)
+
+        # for item in res:
+        #     if item is not None:
+        #         yield item
+        #     return (iter(res))
+        # for item in res:
+        #     yield item
+        #     return (iter(res))
 
     def values(self, key:K1|None=None) -> list[V]:
         """
@@ -553,26 +575,69 @@ if __name__ == "__main__":
     # dt["Tim", "Kat"] = 5
     # print(dt._linear_probe("Tim", "Kat", False), (1, 1))
 
-    dt = DoubleKeyTable()
-    dt["May", "Jim"] = 1
-    dt["Kim", "Tim"] = 2
-    # dt["Kim", "jim"] = 3
+    # dt = DoubleKeyTable()
+    
 
-    key_iterator = dt.iter_keys()
-    value_iterator = dt.iter_values("Kim")
+    # key_iterator = dt.iter_keys("May")
+    # value_iterator = dt.iter_values()
+
+    # key = next(key_iterator)
+    # print("key: ",key, ["May", "Kim"])
+    # key = next(key_iterator)
+    # print("key: ",key, ["May", "Kim"])
+    
+
+    # value = next(value_iterator)
+    # # print("value. : ",value, [1, 2])
+    # value = next(value_iterator)
+    # # print(value, [1, 2])
+
+    # del dt["May", "Jim"]
+    # del dt["Kim", "Tim"]
+    # print(next(key_iterator))
+    # print(next(key_iterator))
+
+    dt = DoubleKeyTable()
+    # dt["May", "Jim"] = 1
+    # dt["Kim", "Tim"] = 2
+    dt["May", "Jim"] = 1
+    dt["May", "a"] = 4
+    dt["Kim", "Tim"] = 2
+    dt["Kim", "Jim"] = 3
+
+    key_iterator = dt.iter_keys("May")
+    value_iterator = dt.iter_values()
 
     key = next(key_iterator)
-    print("key: ",key, ["May", "Kim"])
-
+    print(key, ["May", "Kim"])
+    key = next(key_iterator)
+    print(key, ["May", "Kim"])
+    key = next(key_iterator)
+    print(key, ["May", "Kim"])
+    key = next(key_iterator)
+    print(key, ["May", "Kim"])
+    # print(key, ["May", "Kim"])
     value = next(value_iterator)
-    print("value. : ",value, [1, 2])
+    print(value, [1, 2])
+    value = next(value_iterator)
+    print(value, [1, 2])
     # value = next(value_iterator)
     # print(value, [1, 2])
+    # value = next(value_iterator)
+    # print(value, [1, 2])
+    # value = next(value_iterator)
 
-    del dt["May", "Jim"]
-    del dt["Kim", "Tim"]
-    # print(next(key_iterator))
-    # print(next(key_iterator))
+    # del dt["May", "Jim"]
+    # del dt["Kim", "Tim"]
+
+    # Retrieving the next value should either raise StopIteration or crash entirely.
+    # Note: Deleting from an element being iterated over is bad practice
+    # We just want to make sure you aren't returning a list and are doing this
+    # with an iterator.
+    # self.assertRaises(BaseException, lambda: next(key_iterator))
+    # self.assertRaises(BaseException, lambda: next(value_iterator))
+
+    
 
 
     
