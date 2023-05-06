@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from mountain import Mountain
+from data_structures.hash_table import LinearProbeTable
 from algorithms.mergesort import *
+from algorithms.binary_search import *
 
 class MountainOrganiser:
 
     def __init__(self) -> None:
         self.rank_list = []
+        self.organiser = LinearProbeTable()
 
     def cur_position(self, mountain: Mountain) -> int:
 
@@ -17,31 +20,26 @@ class MountainOrganiser:
 
     def add_mountains(self, mountains: list[Mountain]) -> None:
 
-        self.rank_list.extend(mountains)
-        self.rank_list = mergesort(self.rank_list , key = lambda x:x.length) # n log n
-        temp = self.rank_list[0].length
-        temp_list = []
-        final = []
-        for mountain in self.rank_list: #O(n) where m is the length of the rank_list
-            if self.rank_list.index(mountain) == len(self.rank_list) - 1:
-                if mountain.length == temp:
-                    temp_list.append(mountain)
-                    temp_list = mergesort(temp_list, key=lambda x: x.name) #O(Nlog(n))
-                    final.extend(temp_list)
+        self.rank_list = merge(self.rank_list, mergesort(mountains,key= lambda x:x.length), key= lambda x:x.length)
+        if len(self.rank_list) > 1:
+            count = self.rank_list[0].length
+            final = []
+            temp = []
+            boolean = False
+            last = self.rank_list[-1]
+            for mountain in self.rank_list:
+                if mountain.length == count:
+                    temp.append(mountain)
                 else:
-                    temp_list = mergesort(temp_list, key=lambda x: x.name) #O(Nlog(n))
-                    final.extend(temp_list)
-                    final.append(mountain)
-            elif temp == mountain.length:
-                temp_list.append(mountain)
-            elif temp != mountain.length:
-                temp_list = mergesort(temp_list, key=lambda x: x.name)
-                final.extend(temp_list)
-                temp = mountain.length
-                temp_list = [mountain]
-        self.rank_list = final
-
-
-
-
-
+                    if mountain == last:
+                        if mountain.length == count:
+                            temp.append(mountain)
+                            boolean = True
+                    temp = mergesort(temp,key=lambda x:x.name)
+                    final.extend(temp)
+                    temp = [mountain]
+                    count = mountain.length
+                    if mountain == last:
+                        if not boolean:
+                            final.append(mountain)
+            self.rank_list = final
