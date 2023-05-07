@@ -25,21 +25,15 @@ class MountainOrganiser:
             count = self.rank_list[0].length
             final = []
             temp = []
-            boolean = False
             last = self.rank_list[-1]
             for mountain in self.rank_list:
-                if mountain.length == count:
+                if mountain.length == count and mountain != last:
                     temp.append(mountain)
                 else:
-                    if mountain == last:
-                        if mountain.length == count:
-                            temp.append(mountain)
-                            boolean = True
                     temp = mergesort(temp,key=lambda x:x.name)
                     final.extend(temp)
                     temp = [mountain]
                     count = mountain.length
-                    if mountain == last:
-                        if not boolean:
-                            final.append(mountain)
+                if mountain == last:
+                    final.append(mountain)
             self.rank_list = final

@@ -42,7 +42,6 @@ class TestInfiniteHash(unittest.TestCase):
         ih["mining"] = 6
         ih["jake"] = 7
         ih["linger"] = 8
-
         del ih["limp"]
 
         # Should do nothing
