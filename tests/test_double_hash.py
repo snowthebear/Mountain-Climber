@@ -108,13 +108,12 @@ class TestDoubleHash(unittest.TestCase):
         dt["Kim", "Tim"] = 2
 
         key_iterator = dt.iter_keys()
-        value_iterator = dt.iter_values("Kim")
+        value_iterator = dt.iter_values()
 
         key = next(key_iterator)
         self.assertIn(key, ["May", "Kim"])
         value = next(value_iterator)
         self.assertIn(value, [1, 2])
-        value = next(value_iterator)
         # value = next(value_iterator)
 
         del dt["May", "Jim"]

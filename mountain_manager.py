@@ -12,6 +12,7 @@ class MountainManager:
 
     def add_mountain(self, mountain: Mountain):
         # Add a mountain to the manager
+        
         # print ("aaa", str(mountain.difficulty_level))
         # print("self.store before: ", self.store)
         # print ("self.store.keys() before: ", self.store.keys())
