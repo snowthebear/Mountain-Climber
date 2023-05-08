@@ -16,23 +16,10 @@ class MountainOrganiser:
         # Finds the rank of the provided mountain given all mountains included so far. See below for an example. 
         # Raises KeyError if this mountain hasn't been added yet.
 
-        # for mountains in self.rank_list:
-        #     if mountains.name == mountain.name:
-        #         return self.rank_list.index(mountains)
-        # print 
-        # name = mountain.name
-        # print ("mountain: ", mountain)
-        # for i in mountain:
-        #     print (i)
-        # print (name)
-        # print ("n:", ord(name))
-        # print ("id: ", self.id_list)
-        # print (type(mountain))
 
         if mountain in self.rank_list:
             # print ("insert: ",self.rank_list, id(mountain))
             x = binary_search(self.rank_list, mountain)
-            # y = binary_search(self.id_list, self.rank_list[x].name)
             print ("x: ",x)
             return x
         
@@ -91,22 +78,21 @@ class MountainOrganiser:
         # where M is the length of input list
         # where N is the total number of mountain included so far.
 
-        self.rank_list.extend(mountains) #O(n) where n is the length of the mountain list given
-        self.rank_list = mergesort(self.rank_list,key= lambda x:x.name) #sort by name first, O(Mlog(m)) where m is the length of self.rank_list
-        # self.rank_list += mergesort(mountains,key= lambda x:x.name)
-        # self.id_list = mergesort(self.rank_list, key = lambda x: id(x))
+        # print ("1st: ",self.rank_list)
+        # self.rank_list.extend(mountains) #O(n) where n is the length of the mountain list given
+        # print ("self.rank_list: ", self.rank_list)
+        
+        # mount_list = mergesort(self.rank_list,key= lambda x:x.name) #sort by name first, O(Mlog(m)) where m is the length of self.rank_list
+        # self.rank_list = merge(self.rank_list, mountains,  key= lambda x:x.name)
+        # print ("self.rank_list: ", self.rank_list)
+        mount_list = mergesort(mountains, lambda x:x.name) #nlogn
+        self.rank_list = merge(self.rank_list,mount_list,key = lambda x:x.name) #O(2nlogn + O(n))
         temp = []
         temp = mergesort(self.rank_list, key= lambda x:x.length) #O(Mlog(m)) where m is the length of self.rank_list
-        
-        for i in range (len(temp)): #O(N)
-            self.rank_list[i] = temp[i]
-            # self.id_list[i] = id(self.id_list[i])
-
-        
-        # for y in range (len(self.id_list)):
-        #     self.id_list[y] = id(self.id_list[y])
-        # print (self.id_list)
-
+        # print ("sss: ",self.rank_list)
+        # for i in range (len(temp)): #O(N)
+        #     self.rank_list[i] = temp[i]
+        self.rank_list = temp
 
 if __name__ == "__main__":
     # m1 = Mountain("a", 2, 2)
@@ -137,6 +123,31 @@ if __name__ == "__main__":
     # self.assertRaises(KeyError, lambda: mo.cur_position(m10))
 
 
+    m1 = Mountain("m1", 2, 2)
+    m2 = Mountain("m2", 2, 9)
+    m3 = Mountain("m9", 3, 6)
+    m4 = Mountain("m4", 3, 1)
+    m5 = Mountain("m5", 4, 6)
+    m6 = Mountain("m6", 7, 3)
+    m7 = Mountain("m7", 7, 7)
+    m8 = Mountain("m8", 7, 8)
+    m9 = Mountain("m3", 7, 6)
+    m10 = Mountain("m10", 8, 4)
+
+
+    mo = MountainOrganiser()
+    mo.add_mountains([m1, m2])
+
+    print("aa: ",[mo.cur_position(m) for m in [m1, m2]], [0, 1])
+    mo.add_mountains([m4, m3])
+    print([mo.cur_position(m) for m in [m1, m2, m3, m4]], [1, 3, 2, 0])
+    mo.add_mountains([m5])
+    print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5]], [1, 4, 2, 0, 3])
+    mo.add_mountains([m7, m9, m6, m8])
+    print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5, m6, m7, m8, m9]], [1, 8, 3, 0, 4, 2, 6, 7, 5])
+    # self.assertRaises(KeyError, lambda: mo.cur_position(m10))
+
+
     # m1 = Mountain("m1", 2, 2)
     # m2 = Mountain("m2", 2, 9)
     # m3 = Mountain("m3", 3, 6)
@@ -151,37 +162,13 @@ if __name__ == "__main__":
     # mo = MountainOrganiser()
     # mo.add_mountains([m1, m2])
 
-    # # print("aa: ",[mo.cur_position(m) for m in [m1, m2]], [0, 1])
+    # # print([mo.cur_position(m) for m in [m1, m2]], [0, 1])
     # mo.add_mountains([m4, m3])
-    # print([mo.cur_position(m) for m in [m1, m2, m3, m4]], [1, 3, 2, 0])
+    # # print([mo.cur_position(m) for m in [m1, m2, m3, m4]], [1, 3, 2, 0])
     # mo.add_mountains([m5])
-    # print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5]], [1, 4, 2, 0, 3])
+    # # # print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5]], [1, 4, 2, 0, 3])
     # mo.add_mountains([m7, m9, m6, m8])
     # print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5, m6, m7, m8, m9]], [1, 8, 3, 0, 4, 2, 6, 7, 5])
-    # self.assertRaises(KeyError, lambda: mo.cur_position(m10))
-
-
-    m1 = Mountain("m1", 2, 2)
-    m2 = Mountain("m2", 2, 9)
-    m3 = Mountain("m3", 3, 6)
-    m4 = Mountain("m4", 3, 1)
-    m5 = Mountain("m5", 4, 6)
-    m6 = Mountain("m6", 7, 3)
-    m7 = Mountain("m7", 7, 7)
-    m8 = Mountain("m8", 7, 8)
-    m9 = Mountain("m9", 7, 6)
-    m10 = Mountain("m10", 8, 4)
-
-    mo = MountainOrganiser()
-    mo.add_mountains([m1, m2])
-
-    # print([mo.cur_position(m) for m in [m1, m2]], [0, 1])
-    mo.add_mountains([m4, m3])
-    # print([mo.cur_position(m) for m in [m1, m2, m3, m4]], [1, 3, 2, 0])
-    mo.add_mountains([m5])
-    # # print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5]], [1, 4, 2, 0, 3])
-    mo.add_mountains([m7, m9, m6, m8])
-    print([mo.cur_position(m) for m in [m1, m2, m3, m4, m5, m6, m7, m8, m9]], [1, 8, 3, 0, 4, 2, 6, 7, 5])
 
     # mo.add_mountains([m3])
     # print ([mo.cur_position(m) for m in [m3]], [0, 1])

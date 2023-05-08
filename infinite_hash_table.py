@@ -87,40 +87,43 @@ class InfiniteHashTable(Generic[K, V]):
         :raises KeyError: when the key doesn't exist.
         """
         position = self.hash(key)
+        copy = ()
+        count = 0
         if isinstance(self.table[position][1], InfiniteHashTable):
             if isinstance(self.table[position][1].table[self.table[position][1].hash(key)][1],InfiniteHashTable):
                 del self.table[position][1][key]
-                copy = ()
-                count = 0
+
                 for i in self.table[position][1].table:
                     if i is not None:
                         count += 1
-                if count <= 1:
-                    for i in self.table[position][1].table:
-                        if i is not None:
-                            copy = i
-                            break
-                    self.table[position] = copy
+                        copy = i
+                    
+                # if count <= 1:
+                #     self.table[position] = copy
+
                 self.count -= 1
+
             elif self.table[position][1].table[self.table[position][1].hash(key)][0] == key:
                 self.table[position][1].table[self.table[position][1].hash(key)] = None
                 self.count -= 1
-                copy = ()
-                count = 0
+
                 for i in self.table[position][1].table:
                     if i is not None:
                         count += 1
-                if count == 1:
-                    for i in self.table[position][1].table:
-                        if i is not None:
-                            copy = i
-                            break
-                    if not isinstance(copy[1],InfiniteHashTable):
-                        self.table[position] = copy
+                        copy = i
+
+                # if count == 1:
+                #     if not isinstance(copy[1],InfiniteHashTable):
+                #         self.table[position] = copy
+            if count <= 1:
+                if not isinstance(copy[1],InfiniteHashTable):
+                    self.table[position] = copy
+
         elif self.table[position][0] == key:
             self.table[position] = None
             self.count -= 1
-        elif self.table[position] == None:
+        # elif self.table[position] == None:
+        else:
             raise KeyError
 
     def __len__(self):

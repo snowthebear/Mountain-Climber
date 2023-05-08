@@ -73,35 +73,35 @@ def _binary_search_aux(l: list[T], item: T, lo: int, hi: int) -> int:
     hi: largest index where the return value could be.
     """
     #(self.rank_list, mountain.name, lo=0, hi= len(self.rank_list)
-    print ("--------- START --------")
+    # print ("--------- START --------")
     if lo == hi:
         # if l[lo] == item:
         #     print ("lo hi")
         return lo #hard code
     mid = (hi + lo) // 2
-    print ("mid: ",mid)
-    print ("l[mid]: ", l[mid])
+    # print ("mid: ",mid)
+    # print ("l[mid]: ", l[mid])
     # if l[mid] != item:
     
     if l[mid].length > item.length:
-        print ("AA")
+        # print ("AA")
         # Item would be before mid
         return _binary_search_aux(l, item, lo, mid)
     elif l[mid].length < item.length:
-        print ("BB")
+        # print ("BB")
         # Item would be after mid
         return _binary_search_aux(l, item, mid+1, hi)
     
     elif l[mid].length == item.length:
         if l[mid].name == item.name:
-            print ("------------GET-------------------------------------")
+            # print ("------------GET-------------------------------------")
             return mid
         elif ord(l[mid].name[1]) > ord(item.name[1]):
-            print ("maas")
+            # print ("maas")
             return _binary_search_aux(l, item, lo, mid)
         # else:
         elif ord(l[mid].name[1]) < ord(item.name[1]):
-            print ("omgomg")
+            # print ("omgomg")
             return _binary_search_aux(l, item, mid+1, hi)
             
     # elif l[mid].name == item.name:

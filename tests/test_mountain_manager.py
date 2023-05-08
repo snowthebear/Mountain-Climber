@@ -43,6 +43,8 @@ class TestInfiniteHash(unittest.TestCase):
         mm.add_mountain(m9)
 
         res = mm.group_by_difficulty()
+        # print ("res:")
+        # print ((len(res), 4))
         self.assertEqual(len(res), 4)
         self.assertEqual(make_set(res[0]), make_set([m1, m2]))
         self.assertEqual(make_set(res[1]), make_set([m3, m4]))
