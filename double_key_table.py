@@ -124,6 +124,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                     # print (self.outer_hash[x][0])
                     yield self.outer_hash[x][0]
             #         res.append(self.outer_hash[x][0])
+
             # res = [self.outer_hash[x][0] for x in range (self.table_size) if self.outer_hash[x] is not None]
             
         

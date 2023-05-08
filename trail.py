@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from mountain import Mountain
 from typing import TYPE_CHECKING, Union
 from data_structures.linked_stack import LinkedStack
+import mountain_manager
 
 # Avoid circular imports for typing.
 if TYPE_CHECKING:
@@ -113,7 +114,13 @@ class Trail:
            
     def collect_all_mountains(self) -> list[Mountain]:
         """Returns a list of all mountains on the trail."""
-        raise NotImplementedError()
+        #should be O(N) where N is the total number of mountains and branches combined.
+        
+        # if isinstance(self.store, Trail):
+        pass
+            
+
+        # raise NotImplementedError()
 
     def length_k_paths(self, k) -> list[list[Mountain]]: # Input to this should not exceed k > 50, at most 5 branches.
         """

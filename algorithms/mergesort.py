@@ -38,4 +38,4 @@ def mergesort(l: list[T],key) -> list[T]:
     break_index = (len(l)+1) // 2
     l1 = mergesort(l[:break_index],key)
     l2 = mergesort(l[break_index:],key)
-    return merge(l1, l2,key)
+    return merge(l1, l2, key)
