@@ -116,32 +116,35 @@ class Trail:
     def collect_all_mountains(self) -> list[Mountain]:
         """Returns a list of all mountains on the trail."""
         #should be O(N) where N is the total number of mountains and branches combined.
-        
-        lst = []
-        store_obj = self.store
+        lst =[]
 
-        # if isinstance(store_obj, Trail):
-        #     if store_obj is None:
-        #         return []
-        # print ("list: ", self.lst)
-        # return self.lst
-        return self.collect_mountain_aux(self.store , lst)
-
-    def collect_mountain_aux(self, trail:Trail, lst):
-        if Trail is None:
-            return
-        # else:
         if isinstance (self.store, TrailSeries):
-            print ("aaa", self.store.mountain)
             lst.append(self.store.mountain)
-            print (lst)
-            self.store.following.collect_mountain_aux(self.store,lst)
+            lst += self.store.following.collect_all_mountains()
 
         elif isinstance (self.store, TrailSplit):
-            self.store.path_top.collect_mountain_aux(self.store, lst)
-            self.store.path_bottom.collect_mountain_aux(self.store, lst)
-            self.store.path_follow.collect_mountain_aux(self.store, lst)
+            lst += self.store.path_top.collect_all_mountains()
+            lst += self.store.path_bottom.collect_all_mountains()
+            lst +=self.store.path_follow.collect_all_mountains()
+
         return lst
+        # return self.collect_mountain_aux(self.store , [])
+
+    # def collect_mountain_aux(self, trail:Trail, lst):
+    #     if Trail is None:
+    #         return
+    #     # else:
+    #     if isinstance (self.store, TrailSeries):
+    #         print ("aaa", self.store.mountain)
+    #         lst.append(self.store.mountain)
+    #         print (lst)
+    #         self.store.following.collect_mountain_aux(self.store,lst)
+
+    #     elif isinstance (self.store, TrailSplit):
+    #         self.store.path_top.collect_mountain_aux(self.store, lst)
+    #         self.store.path_bottom.collect_mountain_aux(self.store, lst)
+    #         self.store.path_follow.collect_mountain_aux(self.store, lst)
+    #     return lst
 
     def length_k_paths(self, k) -> list[list[Mountain]]: # Input to this should not exceed k > 50, at most 5 branches.
         """
@@ -153,7 +156,10 @@ class Trail:
         lst = []
         lst.append(k)
         print ("list: ",lst)
-        # raise NotImplementedError()
+        return self.length_k_aux(lst, )
+    
+    def length_k_aux(self, lst ):
+        pass
     
 class TestTrailMethods():
 
