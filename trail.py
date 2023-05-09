@@ -117,11 +117,38 @@ class Trail:
         #should be O(N) where N is the total number of mountains and branches combined.
         
         lst = []
+        store_obj = self.store
+
+        # if isinstance(store_obj, Trail):
+        #     if store_obj is None:
+        #         return []
+        if store_obj is None:
+            return [] 
+        else:
+            if isinstance (store_obj, TrailSeries):
+                print ("aaa", store_obj.mountain)
+                lst.append(store_obj.mountain)
+                store_obj.following.collect_all_mountains()
+            elif isinstance (store_obj, TrailSplit):
+                if store_obj.path_top:
+                   store_obj.path_top.collect_all_mountains() 
+                    
+                elif store_obj.path_bottom:
+                    store_obj.path_bottom.collect_all_mountains()
+                    
+                else:
+                    store_obj.path_follow.collect_all_mountains()
+        print ("list: ",lst)
+        return lst
+                    
+                    
+
+        
         # if isinstance(self.store, Trail):
         #     lst.append(self.store.mountain)
         # print (lst)
 
-        raise NotImplementedError()
+        # raise NotImplementedError()
 
     def length_k_paths(self, k) -> list[list[Mountain]]: # Input to this should not exceed k > 50, at most 5 branches.
         """
@@ -130,8 +157,10 @@ class Trail:
 
         Paths are unique if they take a different branch, even if this results in the same set of mountains.
         """
-
-        raise NotImplementedError()
+        lst = []
+        lst.append(k)
+        print ("list: ",lst)
+        # raise NotImplementedError()
     
 class TestTrailMethods():
 
@@ -189,7 +218,7 @@ class TestTrailMethods():
 
 
 if __name__ == "__main__":
-    t = TestTrailMethods()
-    print (t.test_example())
+    t = Trail()
+    print (t.collect_all_mountains())
    
    
