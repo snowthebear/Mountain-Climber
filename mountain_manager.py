@@ -94,26 +94,26 @@ class MountainManager:
         # self.store.values is sorted by the name
         #----------------------------------------
         sorted_list = []
-        a = []
-        print ("value store: ", self.store.values())
-        print()
+        # a = []
+        # print ("value store: ", self.store.values())
+        # print()
         #-------------------------------------------
         # name_list = mergesort(self.store.values(),key=lambda x:x.name) #sort the name
-        print ("aaaaa",type(self.store.values()))
+        # print ("aaaaa",type(self.store.values()))
         # key_list = mergesort(self.store.keys(),key=lambda x:x) #sort the given difficulty level
 
         # sorted_list = merge(name_list,key_list, key = lambda x:x.difficulty_level)
         # sorted_list = mergesort(self.store.values(), key=lambda x:x.name)
         # print ("sort: ", sorted_list)
-        print ("name_list: ", self.store.values())
-        print ("key_list: ",self.store.keys())
+        # print ("name_list: ", self.store.values())
+        # print ("key_list: ",self.store.keys())
         # for key in self.store.values():
         #     print ("masuk sini")
         #     print ("ini key: ", key)
         #     # print ("type: ", type(key))
         #     sorted_list +=  self.store.values()
         # print (self.store.key)
-        print ("panjang store: ", len(self.store))
+        # print ("panjang store: ", len(self.store))
         # for i in range (len(self.store))
 
         #correct:
@@ -129,16 +129,16 @@ class MountainManager:
                 # a.append([i.difficulty_level])
 
         for i in self.store.keys():
-            print ("fasdfasdf; ",self.store.values(i))
+            # print ("fasdfasdf; ",self.store.values(i))
             sorted_list += [self.store.values(i)]
         
 
         
-        print ("---------- LIST ------------")
-        print ("list: ", sorted_list)
+        # print ("---------- LIST ------------")
+        # print ("list: ", sorted_list)
         # print ("a: ", a)
-        print ("len sorted: ", len(sorted_list))
-        print ("----------------------------")
+        # print ("len sorted: ", len(sorted_list))
+        # print ("----------------------------")
         #-------------------------------------------
         # return sorted_list
 
@@ -204,9 +204,9 @@ if __name__ == "__main__":
     res = mm.group_by_difficulty()
     # print(len(res), 4)
     print(make_set(res[0]), make_set([m1, m2]))
-    # print(make_set(res[1]), make_set([m3, m4]))
-    # print(make_set(res[2]), make_set([m5]))
-    # print(make_set(res[3]), make_set([m6, m7, m8, m9]))
+    print(make_set(res[1]), make_set([m3, m4]))
+    print(make_set(res[2]), make_set([m5]))
+    print(make_set(res[3]), make_set([m6, m7, m8, m9]))
 
     mm.add_mountain(m10)
     # mm.remove_mountain(m5)

@@ -76,6 +76,7 @@ TrailStore = Union[TrailSplit, TrailSeries, None]
 class Trail:
 
     store: TrailStore = None
+    # lst = []
 
     def add_mountain_before(self, mountain: Mountain) -> Trail:
         """Adds a mountain before everything currently in the trail."""
@@ -122,33 +123,25 @@ class Trail:
         # if isinstance(store_obj, Trail):
         #     if store_obj is None:
         #         return []
-        if store_obj is None:
-            return [] 
-        else:
-            if isinstance (store_obj, TrailSeries):
-                print ("aaa", store_obj.mountain)
-                lst.append(store_obj.mountain)
-                store_obj.following.collect_all_mountains()
-            elif isinstance (store_obj, TrailSplit):
-                if store_obj.path_top:
-                   store_obj.path_top.collect_all_mountains() 
-                    
-                elif store_obj.path_bottom:
-                    store_obj.path_bottom.collect_all_mountains()
-                    
-                else:
-                    store_obj.path_follow.collect_all_mountains()
-        print ("list: ",lst)
+        # print ("list: ", self.lst)
+        # return self.lst
+        return self.collect_mountain_aux(self.store , lst)
+
+    def collect_mountain_aux(self, trail:Trail, lst):
+        if Trail is None:
+            return
+        # else:
+        if isinstance (self.store, TrailSeries):
+            print ("aaa", self.store.mountain)
+            lst.append(self.store.mountain)
+            print (lst)
+            self.store.following.collect_mountain_aux(self.store,lst)
+
+        elif isinstance (self.store, TrailSplit):
+            self.store.path_top.collect_mountain_aux(self.store, lst)
+            self.store.path_bottom.collect_mountain_aux(self.store, lst)
+            self.store.path_follow.collect_mountain_aux(self.store, lst)
         return lst
-                    
-                    
-
-        
-        # if isinstance(self.store, Trail):
-        #     lst.append(self.store.mountain)
-        # print (lst)
-
-        # raise NotImplementedError()
 
     def length_k_paths(self, k) -> list[list[Mountain]]: # Input to this should not exceed k > 50, at most 5 branches.
         """
@@ -219,6 +212,6 @@ class TestTrailMethods():
 
 if __name__ == "__main__":
     t = Trail()
-    print (t.collect_all_mountains())
+    print (t.length_k_paths())
    
    
