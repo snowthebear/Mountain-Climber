@@ -45,10 +45,7 @@ class TrailSeries:
     def remove_mountain(self) -> TrailStore:
         """Removes the mountain at the beginning of this series."""
 
-        # mountain_remove = Trail(TrailSeries(None, self.following)) ##not sure
         return self.following.store
-
-        # raise NotImplementedError()
 
     def add_mountain_before(self, mountain: Mountain) -> TrailStore:
         """Adds a mountain in series before the current one."""
@@ -89,28 +86,32 @@ class Trail:
         return Trail(TrailSplit(Trail(None), Trail(None), self))
 
     def follow_path(self, personality: WalkerPersonality) -> None:
-        """Follow a path and add mountains according to a personality."""
+        """Follow a path and add mountains according to a personality.
+        
+        Big-O notation: O(n) where n is the length of linked stack.
+
+        """
 
         link_stack = LinkedStack()
         store_obj = self.store #to store the object from self.store so it wont skip the whole code.
         
-        while store_obj is not None or not link_stack.is_empty():
+        while store_obj is not None or not link_stack.is_empty(): #O(n)
                 
-            if isinstance(store_obj, TrailSeries):
+            if isinstance(store_obj, TrailSeries): #O(1)
                 personality.add_mountain(store_obj.mountain)
                 store_obj = store_obj.following.store
 
-            elif isinstance(store_obj, TrailSplit):
-                if personality.select_branch(store_obj.path_top, store_obj.path_bottom) == True: #Top walker
+            elif isinstance(store_obj, TrailSplit): #O(1)
+                if personality.select_branch(store_obj.path_top, store_obj.path_bottom) == True: #Top walker #O(1)
                     link_stack.push(store_obj.path_follow.store)
                     store_obj = store_obj.path_top.store
                     
-                else: #Bottom walker or Lazy walker 
+                else: #Bottom walker or Lazy walker #O(1)
                     link_stack.push(store_obj.path_follow.store)
                     store_obj = store_obj.path_bottom.store
 
             if store_obj is None and not link_stack.is_empty(): ## to check if you dont have any branch, it means it goes down
-                store_obj = link_stack.pop()
+                store_obj = link_stack.pop() #O(1)
             
            
     def collect_all_mountains(self) -> list[Mountain]:
