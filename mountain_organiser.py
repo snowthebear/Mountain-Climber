@@ -8,90 +8,32 @@ from algorithms.binary_search import *
 class MountainOrganiser:
 
     def __init__(self) -> None:
+        """
+        Big-O notation: O(1) because only declaration of an empty list.
+        """
         self.rank_list = []
-        # self.id_list = []
-        self.organiser = LinearProbeTable()
 
     def cur_position(self, mountain: Mountain) -> int:
+        """
+        Big-O notation: O(log(N)) where N is the total number of mountain included so far.
+        """
         # Finds the rank of the provided mountain given all mountains included so far. See below for an example. 
         # Raises KeyError if this mountain hasn't been added yet.
 
-
         if mountain in self.rank_list:
-            # print ("insert: ",self.rank_list, id(mountain))
             x = binary_search(self.rank_list, mountain)
-            print ("x: ",x)
             return x
         
         raise KeyError
 
     def add_mountains(self, mountains: list[Mountain]) -> None:
-
-        # self.rank_list = merge(self.rank_list, mergesort(mountains,key= lambda x:x.length), key= lambda x:x.length)
-        # if len(self.rank_list) > 1:
-        #     count = self.rank_list[0].length
-        #     final = []
-        #     temp = []
-        #     last = self.rank_list[-1]
-        #     for mountain in self.rank_list:
-        #         if mountain.length == count and mountain != last: #length mountain sama, tp mountain bkn terakhir
-        #             temp.append(mountain)
-                
-        #         # else: #length tdk sama dengan length sebelumnya, 
-        #         temp = mergesort(temp,key=lambda x:x.name)
-        #         final.extend(temp)
-        #         temp = [mountain]
-        #         count = mountain.length
-
-        #         if mountain == last: #kalo mountain terahir , append ke final
-        #             final.append(mountain)
-               
-        #     self.rank_list = final
-
-        # self.rank_list = merge(self.rank_list, mergesort(mountains,key= lambda x:x.length), key= lambda x:x.length)
-        # if len(self.rank_list) > 1:
-        #     count = self.rank_list[0].length
-        #     final = []
-        #     temp = []
-        #     boolean = False
-        #     last = self.rank_list[-1]
-        #     for mountain in self.rank_list:
-        #         if mountain.length == count and mountain != last:
-        #             temp.append(mountain)
-        #         else:
-        #             if mountain == last:
-        #                 if mountain.length == count:
-        #                     temp.append(mountain)
-        #                     boolean = True
-        #             temp = mergesort(temp,key=lambda x:x.name)
-        #             final.extend(temp)
-        #             temp = [mountain]
-        #             count = mountain.length
-        #             if mountain == last:
-        #                 if not boolean:
-        #                     final.append(mountain)
-        #     self.rank_list = final
-
-        #-----------------Yenny----------------------------------------
-
-        # complexity = M(Log(m)) + N
-        # where M is the length of input list
-        # where N is the total number of mountain included so far.
-
-        # print ("1st: ",self.rank_list)
-        # self.rank_list.extend(mountains) #O(n) where n is the length of the mountain list given
-        # print ("self.rank_list: ", self.rank_list)
-        
-        # mount_list = mergesort(self.rank_list,key= lambda x:x.name) #sort by name first, O(Mlog(m)) where m is the length of self.rank_list
-        # self.rank_list = merge(self.rank_list, mountains,  key= lambda x:x.name)
-        # print ("self.rank_list: ", self.rank_list)
+        """
+        Big-O notation: O(M log(M) + N) where M is the length of input list, and N is the total number of mountains included so far.
+        """
         mount_list = mergesort(mountains, lambda x:x.name) #nlogn
         self.rank_list = merge(self.rank_list,mount_list,key = lambda x:x.name) #O(2nlogn + O(n))
         temp = []
         temp = mergesort(self.rank_list, key= lambda x:x.length) #O(Mlog(m)) where m is the length of self.rank_list
-        # print ("sss: ",self.rank_list)
-        # for i in range (len(temp)): #O(N)
-        #     self.rank_list[i] = temp[i]
         self.rank_list = temp
 
 if __name__ == "__main__":
