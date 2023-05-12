@@ -22,6 +22,9 @@ class InfiniteHashTable(Generic[K, V]):
     TABLE_SIZE = 27
 
     def __init__(self,sizes = None) -> None:
+        """
+        Big-O notation: O(self.TABLE_SIZE) because it depends on the size of the given TABLE_SIZE
+        """
 
         if sizes is not None:
             self.TABLE_SIZE = sizes
@@ -30,6 +33,9 @@ class InfiniteHashTable(Generic[K, V]):
         self.count = 0
 
     def hash(self, key: K) -> int:
+        """
+        Big-O notation: O(1) because it is returning a constant value.
+        """
         if self.level < len(key):
             return ord(key[self.level]) % (self.TABLE_SIZE-1)
         return self.TABLE_SIZE-1
@@ -39,13 +45,10 @@ class InfiniteHashTable(Generic[K, V]):
         Get the value at a certain key
 
         :raises KeyError: when the key doesn't exist.
+
+        Big-O notation: O(self.get_location() + n)
         """
-        # position = self.hash(key)
-        # if isinstance(self.table[position][1],InfiniteHashTable):
-        #     return self.table[position][1][key]
-        # elif self.table[position][0] == key:
-        #     return self.table[position][1]
-        # raise KeyError
+        
         locations = self.get_location(key)
         for x in locations:
             return self.table[x][1]
@@ -53,6 +56,10 @@ class InfiniteHashTable(Generic[K, V]):
     def __setitem__(self, key: K, value: V) -> None:
         """
         Set an (key, value) pair in our hash table.
+
+        Big-O notation: Best: O(hash(key)) --> O(1), where the position of the table is None.
+                        Worst: O(hash(key) + n*(hash(key))) --> O(n), 
+                               where n is the comparison of copy < len(key) and copy < len(original_key) and key[copy] == original_key[copy].
         """
         position = self.hash(key)
         if self.table[position] is None:
@@ -60,7 +67,7 @@ class InfiniteHashTable(Generic[K, V]):
             self.count += 1
         elif isinstance(self.table[position][1],InfiniteHashTable):
             self.table[position][1][key] = value
-            self.count += 1
+            self.count += 1 # why ?????
         elif self.table[position][0] == key:
             self.table[position] = (key,value)
         else:
@@ -88,64 +95,42 @@ class InfiniteHashTable(Generic[K, V]):
         Deletes a (key, value) pair in our hash table.
 
         :raises KeyError: when the key doesn't exist.
-        """
-        # locations = self.get_location(key)
-        # for location in locations:
-        #     if isinstance(self.table[location][1], InfiniteHashTable):
-        #         del self.table[location][1][key]
-        #         self.count -= 1
-        #     else:
-        #         self.table[location] = None
-        #         self.count -= 1
-        #         count = 0
-        #         copy = ()
-        #         for i in self.table:
-        #             if i is not None:
-        #                 count += 1
-        #                 copy = 1
-        #         if count == 1:
-        #
-        #
-        #
 
+        Big-O notation: Best: O(hash(key)), when the value of given position is the key.
+                        Worst: O(hash(key) + ) ???
+        """
         position = self.hash(key)
+        copy = ()
+        count = 0
         if isinstance(self.table[position][1], InfiniteHashTable):
-            if isinstance(self.table[position][1].table[self.table[position][1].hash(key)][1],InfiniteHashTable):
+            if isinstance(self.table[position][1].table[self.table[position][1].hash(key)][1], InfiniteHashTable):
                 del self.table[position][1][key]
-                copy = ()
-                count = 0
-                for i in self.table[position][1].table:
-                    if i is not None:
-                        count += 1
-                if count <= 1:
-                    for i in self.table[position][1].table:
-                        if i is not None:
-                            copy = i
-                            break
-                    self.table[position] = copy
                 self.count -= 1
+
             elif self.table[position][1].table[self.table[position][1].hash(key)][0] == key:
                 self.table[position][1].table[self.table[position][1].hash(key)] = None
                 self.count -= 1
-                copy = ()
-                count = 0
-                for i in self.table[position][1].table:
-                    if i is not None:
-                        count += 1
-                if count == 1:
-                    for i in self.table[position][1].table:
-                        if i is not None:
-                            copy = i
-                            break
-                    if not isinstance(copy[1],InfiniteHashTable):
-                        self.table[position] = copy
+
+            for i in self.table[position][1].table:
+                if i is not None:
+                    count += 1
+                    copy = i
+
+            if count <= 1:
+                if not isinstance(copy[1],InfiniteHashTable):
+                    self.table[position] = copy
+
         elif self.table[position][0] == key:
             self.table[position] = None
             self.count -= 1
-        elif self.table[position] == None:
+
+        else:
             raise KeyError
 
     def __len__(self):
+        """
+        Big-O notation: O(1) because it is only returning a constant value (self.count)
+        """
         return self.count
 
     def __str__(self) -> str:
@@ -153,6 +138,8 @@ class InfiniteHashTable(Generic[K, V]):
         String representation.
 
         Not required but may be a good testing tool.
+
+        Big-O notation: O(self.table) where self.table is the array with the size of self.TABLE_SIZE
         """
         result = str(self.table)
         return result
@@ -162,6 +149,9 @@ class InfiniteHashTable(Generic[K, V]):
         Get the sequence of positions required to access this key.
 
         :raises KeyError: when the key doesn't exist.
+
+        Big-O notation: Best: O(hash(key)) when the key is equals to the self.table[position][0]: 
+                        Worst: O(hash(key) + n) when it needs to extend the list.
 
         """
         position = self.hash(str(key))

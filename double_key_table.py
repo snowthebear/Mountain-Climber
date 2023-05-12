@@ -83,18 +83,18 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         :raises KeyError: When the key pair is not in the table, but is_insert is False.
         :raises FullError: When a table is full and cannot be inserted.
 
-        Big-O notation: Best - O(hash1(key1) + hash1(key2)) --> O(len(key1) + len(key2)), when the first position is empty
+        Big-O notation: Best - O(hash1(key1) + hash1(key2)) --> O(len(key1) + comp(key1) + len(key2) + comp(key2)), when the key is matched at the first iteration (searching), and the first position is empty
                         Worst - O(hash1(key1) + n * (hash2(key2) + _linear_probe())) --> O(len(key1) + n * (len(key2) + N*comp(K)))
                                 where n is the length of the table_size, hash1 is len(key), hash2 is len(key), 
-                                and _linear_probe is O(hash(key) + N*comp(K)) where N is the table size.
+                                and _linear_probe is the inner table O(hash(key) + N*comp(K)) where N is the table size and K is the key of inner table.
         """
 
         top_pos = self.hash1(key1) #O(hash1(key))
-
+        #O(len(key1) + n*(len(key2) + N*comp(K))))
         for a in range (self.table_size): #O(n) 
             if self.outer_hash[top_pos] is None:
                 if is_insert:
-                    inner = LinearProbeTable(self.internal_sizes) # untuk value outer table
+                    inner = LinearProbeTable(self.internal_sizes) # for value outer table
                     inner.hash = lambda k: self.hash2(k, inner) #O(len(key))
                     self.outer_hash[top_pos] = (key1, inner) #setting ke outer
                     self.count +=1
@@ -130,7 +130,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         if key is None:
             for x in range(self.table_size): #O(n)
                 if self.outer_hash[x] is not None:
-                    yield self.outer_hash[x][0] #O(n) or O(1) ?
+                    yield self.outer_hash[x][0] #O(1)
         
         else:
             pos = self.hash1(key) #O(hash)
@@ -138,37 +138,6 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                 if self.outer_hash[pos][1] is not None:
                     for i in self.outer_hash[pos][1].keys(): #(On)
                         yield i
-                
-        # # res.append(None)
-        # # print ("res: ", res)
-        # # print (len(res))
-        # list_res = iter(res)
-        # i = 0
-        # # while i != len(res):
-        # #     print ("i: ", i)
-        # #     # if i == len(res)-2:
-        # #     #     return (list_res)
-        # #     # print ("res: ",res)
-        # #     yield res[i]
-        # #     i+=1
-        # raise StopIteration
-
-        # for i in range (len(res)):
-        #     print ("res i: ", res[i])
-        #     if ([res[i]]) is not None:
-        #         print ("AAA")
-        #         yield res[i]
-            # return(iter(res))
-            
-                # print ("res[i]: ", res[i])
-                
-
-        # for item in list_res:
-        #     if next(list_res) is None:
-        #         print ("AAA")
-        #         return (list_res)
-        #     yield item
-        # return (iter(res))
     
     def keys(self, key:K1|None=None) -> list[K1]:
         """
@@ -176,7 +145,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = x: returns all bottom-level keys for top-level key x.
 
         Big-O notation: Best: O(n) where n is the length of the table size, best case when the key is None
-                        Worst: O(hash1(key) + n) --> O(len(key) + n) where n is the length of the table size, worst case when the key is not None.
+                        Worst: O(hash1(key) + n) --> O(len(key) + n * comp(key)) where n is the length of the table size, worst case when the key is not None.
         """
     
         if key is None:
@@ -226,7 +195,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         key = x: returns all values for top-level key x.
 
         Big-O notation: Best - O(n) where n is the length of the table size, and best case is when the key is None.
-                        Worst - O(hash1(key) + n * (comp(k1) + m)) --> O(len(key) + n * (comp(k1) + m)) worst case is when the key is given.
+                        Worst - O(hash1(key) + n * (comp(k1) + m)) --> O(len(key) + n * (comp(k1) + m)) worst case is when the key is given and it the 2nd key is matches.
                                 where n is the the length of the table size, and comp(k1) is the comparison of whether the element is the key,
                                 and m where it returns the values with .values()
         """
@@ -264,7 +233,10 @@ class DoubleKeyTable(Generic[K1, K2, V]):
 
         :raises KeyError: when the key doesn't exist.
 
-        Big-O notation: O(_linear_probe) --> O(hash1(key) + n * (len(key) + N*comp(K)))
+        Big-O notation: Best - O(hash1(key1) + hash1(key2)) --> O(len(key1) + comp(key1) + len(key2) + comp(key2)), when the key is matched at the first iteration (searching), and the first position is empty
+                        Worst - O(hash1(key1) + n * (hash2(key2) + _linear_probe())) --> O(len(key1) + n * (len(key2) + N*comp(K)))
+                                where n is the length of the table_size, hash1 is len(key), hash2 is len(key), 
+                                and _linear_probe is the inner table O(hash(key) + N*comp(K)) where N is the table size and K is the key of inner table.
         """
         (top_pos, bottom_pos) = self._linear_probe(key[0], key[1], False)
         return self.outer_hash[top_pos][1][key[1]]
@@ -293,7 +265,10 @@ class DoubleKeyTable(Generic[K1, K2, V]):
         Big-O notation: Best: O(hash1(key1) + hash1(key2) + hash(key)) --> O(len(key1) + len(key2))
                         Worst: O(_linear_probe + N*hash(key)+N^2*comp(K)) when deleting item is midway through large chain.
                                O(hash1(key) + n * (len(key2) + N*comp(K)) + N*hash(key)+ N^2*comp(K))
-                               = O(len(key1) + n * (len(key2) + N*comp(K)) + N*hash(key)+ N^2*comp(K))
+                               = O(len(key1) + n * (len(key2) + N*comp(K)) + M*hash(key)+ M^2*comp(K))
+                                where n is the length of the table_size, hash1 is len(key), hash2 is len(key), 
+                                and _linear_probe is the inner table O(hash(key) + N*comp(K)) where N is the table size and K is the key of inner table.
+                                and it is worst when deleting item is midway through large chain.
 
         """
 
@@ -304,48 +279,6 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             self.count -=1
             self.outer_hash[top_pos] = None
         top_pos = (top_pos + 1) % self.table_size
-        # print ("key[0], key[1]: ", key[0], key[1])
-
-        #-------------------------------------------------------------
-        # if self.outer_hash[top_pos] is None:
-        #     while self.outer_hash[top_pos] is not None:
-        #         # key1, value = self.outer_hash[top_pos]
-        #         item = self.outer_hash[top_pos]
-        #         # print ("key1 before: ",item[0])
-        #         self.outer_hash[top_pos][1][key[1]] = None
-        #         # print ("a: ",self.outer_hash[top_pos][1][item[1]])
-        #         # print ("key1 after: ",item[1])
-        #         item = self.outer_hash[top_pos]
-        #         # newpos = value._linear_probe(key1, True)
-        #         # print ("newpos: ",newpos)
-        #         # print ((key1, value))
-        #         # self.outer_hash[newpos] = (key1, value)
-        #         # list_key = value.keys()
-        #         # # self.outer_hash[top_pos][1][key[1]] = None
-
-        #         # # self.outer_hash[top_pos] = None
-        #         # for key2 in list_key:
-        #         #     self[key1, key2] = newpos #using set magic method
-        #         # # self.count -= 1
-        #         # # # print(self[item[0]])
-        #         top_pos = (top_pos + 1) % self.table_size
-            #----------------------------------------------
-                # key2, value = self.outer_hash[top_pos]
-                # self.outer_hash[top_pos] = None
-                # # Reinsert.
-                # newpos = self._linear_probe(key[0],key2, True)
-                # self.outer_hash[newpos] = (key2, value)
-                # top_pos = (top_pos + 1) % self.table_size
-        # else:
-        #     self.outer_hash[top_pos][1][key[0]] = None
-        #     # top_pos = (top_pos + 1) % self.table_size
-        # # top_pos = (top_pos + 1) % self.table_size
-
-        
-        # print ("top_pos after: ",top_pos)
-        # print ("pos: ",pos)
-
-        
 
     def _rehash(self) -> None:
         """
@@ -372,49 +305,6 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                     (top_pos, bottom_pos) = self._linear_probe(key, key2, True)
                     self.outer_hash[top_pos] = (key, inner_table)
                     
-
-        #-----------------------------------------------
-
-        # print(self.sizes[self.size_index])
-        # print (self.table_size)
-        # print (f"self.outer_hash[0][1]: {self.outer_hash[0][1]} ", end ="")
-
-
-        # for i in range (len(self.outer_hash)): #inner table
-        #     # print ("len(self.outer_hash)): ",i)
-        #     print (type(self.outer_hash[i])) #tuple
-        #     if self.outer_hash[i] is not None:
-        #         print (len(self.outer_hash[i]))
-        #         print (type(self.outer_hash[i][1])) #data structure
-        #         print("outerhash[i]: ", self.outer_hash[i][1])
-        #         print ("self.internal_sizes[self.size_index]: ", self.internal_sizes[self.size_index])
-        #         print ("len(self.internal_sizes)",len(self.internal_sizes))
-        #         if len(self.outer_hash[i][1]) >= len(self.internal_sizes) // 2:
-        #             self.outer_hash[i][1]._rehash()
-        #             print ("3r")
-
-        # print ("table_size: ", self.table_size)
-        # print ("self.outer_hash: ", len(self.outer_hash))
-        # print("self.sizes[self.size_index]: ",self.sizes[self.size_index])
-        # print ("self.sizes[self.size_index] // 2: ", self.sizes[self.size_index] // 2)
-        # print ("count:",self.count)
-
-        # for i in range (len(self.outer_hash)): #inner table
-        #     if len(self.outer_hash[i][1]) == self.internal_sizes[self.size_index]:
-        #         old_array = self.outer_hash
-        #         self.size_index += 1
-        #         if self.size_index == len(self.outer_hash):
-        #             # print (self.size_index, len(self.outer_hash))
-        #             # Cannot be resized further.
-        #             return
-        #         self.outer_hash = ArrayR(self.sizes[self.size_index])
-        #         # print (len(self.outer_hash))
-        #         self.count = 0
-        #         for item in old_array:
-        #             if item is not None:
-        #                 key, value = item
-        #                 self[key] = value
-        
     
     @property
     def table_size(self) -> int:
@@ -439,7 +329,6 @@ class DoubleKeyTable(Generic[K1, K2, V]):
 
         Not required but may be a good testing tool.
 
-        Big-O notaion: O(n) where n is the length of the sizes.
         """
         new_string = ""
         for item in self.sizes:
@@ -447,102 +336,6 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                 (key, value) = item
                 new_string += "(" + str(key) + "," + str(value) + ")\n"
         return new_string
-
-if __name__ == "__main__":
-    # dt = DoubleKeyTable(sizes=[3, 5], internal_sizes=[3, 5])
-    # dt.hash1 = lambda k: ord(k[0]) % dt.table_size
-    # dt.hash2 = lambda k, sub_table: ord(k[-1]) % sub_table.table_size
-    # dt["Pip", "Bob"] = 4
-    # (dt.table_size, 5)
-
-    # print (dt._rehash())
-
-    # dt = DoubleKeyTable(sizes=[12], internal_sizes=[5])
-    # dt.hash1 = lambda k: ord(k[0]) % 12
-    # dt.hash2 = lambda k, sub_table: ord(k[-1]) % 5
-
-    # dt["Tim", "Jen"] = 1
-    # dt["Amy", "Ben"] = 2
-    # dt["Tim", "Kat"] = 3
-
-    # print(dt._linear_probe("Tim", "Kat", False), (0, 1))
-
-    # del dt["Tim", "Jen"]
-    # # We can't do this as it would create the table.
-    # # self.assertEqual(dt._linear_probe("Het", "Bob", True), (1, 3))
-    # del dt["Tim", "Kat"]
-    # # Deleting again should make space for Het.
-    # dt["Het", "Bob"] = 4
-    # print(dt._linear_probe("Het", "Bob", False), (0, 3))
-
-    # # print(KeyError, lambda: dt._linear_probe("Tim", "Jen", False))
-    # dt["Tim", "Kat"] = 5
-    # print(dt._linear_probe("Tim", "Kat", False), (1, 1))
-
-    # dt = DoubleKeyTable()
-    
-
-    # key_iterator = dt.iter_keys("May")
-    # value_iterator = dt.iter_values()
-
-    # key = next(key_iterator)
-    # print("key: ",key, ["May", "Kim"])
-    # key = next(key_iterator)
-    # print("key: ",key, ["May", "Kim"])
-    
-
-    # value = next(value_iterator)
-    # # print("value. : ",value, [1, 2])
-    # value = next(value_iterator)
-    # # print(value, [1, 2])
-
-    # del dt["May", "Jim"]
-    # del dt["Kim", "Tim"]
-    # print(next(key_iterator))
-    # print(next(key_iterator))
-
-    dt = DoubleKeyTable()
-    # dt["May", "Jim"] = 1
-    # dt["Kim", "Tim"] = 2
-    dt["May", "Jim"] = 1
-    dt["May", "a"] = 4
-    dt["Kim", "Tim"] = 2
-    dt["Kim", "Jim"] = 3
-
-    key_iterator = dt.iter_keys()
-    value_iterator = dt.iter_values()
-
-    key = next(key_iterator)
-    print(key, ["May", "Kim"])
-    # print ("aa",dt.iter_keys())
-    key = next(key_iterator)
-    print (key)
-    print(key, ["May", "Kim"])
-    # # key = next(key_iterator)
-    # print(key, ["May", "Kim"])
-    # key = next(key_iterator)
-    # print(key, ["May", "Kim"])
-    # # print(key, ["May", "Kim"])
-    # value = next(value_iterator)
-    # print(value, [1, 2])
-    # value = next(value_iterator)
-    # print(value, [1, 2])
-    # value = next(value_iterator)
-    # print(value, [1, 2])
-    # value = next(value_iterator)
-    # print(value, [1, 2])
-    # value = next(value_iterator)
-
-    # del dt["May", "Jim"]
-    # del dt["Kim", "Tim"]
-
-    # Retrieving the next value should either raise StopIteration or crash entirely.
-    # Note: Deleting from an element being iterated over is bad practice
-    # We just want to make sure you aren't returning a list and are doing this
-    # with an iterator.
-    # self.assertRaises(BaseException, lambda: next(key_iterator))
-    # self.assertRaises(BaseException, lambda: next(value_iterator))
-
     
 
 

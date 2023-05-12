@@ -91,9 +91,7 @@ class TestDoubleHash(unittest.TestCase):
         dt["Tim", "Bob"] = 6
         dt["May", "Jim"] = 7
         dt["Het", "Liz"] = 8
-        for i in dt.keys("Tim"):
-            print ("total table: ", i)
-        # print (dt.keys())
+
         self.assertEqual(set(dt.keys()), {"Tim", "Amy", "May", "Ivy", "Het"})
         self.assertEqual(set(dt.keys("May")), {"Ben", "Tom", "Jim"})
 
