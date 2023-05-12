@@ -104,7 +104,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
                     raise KeyError(top_pos)
                 
             elif self.outer_hash[top_pos][0] == key1:
-                #cek inner hash
+                #check inner hash
                 bottom_pos = self.outer_hash[top_pos][1]._linear_probe(key2, is_insert)
                 return (top_pos, bottom_pos)
             else:
@@ -136,7 +136,7 @@ class DoubleKeyTable(Generic[K1, K2, V]):
             pos = self.hash1(key) #O(hash)
             for i in range (self.outer_hash[pos][1].table_size): #O(n)
                 if self.outer_hash[pos][1] is not None:
-                    for i in self.outer_hash[pos][1].keys(): #(On)
+                    for i in self.outer_hash[pos][1].keys(): #O(n)
                         yield i
     
     def keys(self, key:K1|None=None) -> list[K1]:
