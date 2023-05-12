@@ -33,9 +33,6 @@ class InfiniteHashTable(Generic[K, V]):
         self.count = 0
 
     def hash(self, key: K) -> int:
-        """
-        Big-O notation: O(1) because it is returning a constant value.
-        """
         if self.level < len(key):
             return ord(key[self.level]) % (self.TABLE_SIZE-1)
         return self.TABLE_SIZE-1
